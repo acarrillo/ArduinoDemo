@@ -2,7 +2,7 @@ import serial
 import curses
 import time
 
-ser=serial.Serial('/dev/tty.usbmodem411')
+ser=serial.Serial('/dev/tty.usbmodem621')
 stdscr = curses.initscr()
 stdscr.keypad(1)
 stdscr.nodelay(1)
