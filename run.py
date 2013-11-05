@@ -1,5 +1,6 @@
 import serial
 import curses
+import time
 
 ser=serial.Serial('/dev/tty.usbmodem411')
 stdscr = curses.initscr()
@@ -12,18 +13,21 @@ curses.cbreak()
 drive = False
 
 while 1:
-    if stdscr.getch()==ord('q'): # Quit
+    char = stdscr.getch()
+    if char==ord('q'): # Quit
         break;
-    elif stdscr.getch()==ord('OD'): # Left arrow key
+    elif char==curses.KEY_LEFT: # Left arrow key
         ser.write("1") # Left
-    elif stdscr.getch()==ord('OC'): # Right arrow key
+    elif char==curses.KEY_RIGHT: # Right arrow key
         ser.write("2") # Right
-    elif stdscr.getch()==ord('OA'): # Up arrow key
+    elif char==curses.KEY_UP: # Up arrow key
         ser.write("3") # Straight
-    elif stdscr.getch()==ord(' '): # Spacebar
+    elif char==ord(' '): # Spacebar
         ser.write("4") if not drive else ser.write("5") # Start or Stop
         drive = not drive
+
     stdscr.refresh()
+    time.sleep(.1)
 
 curses.nocbreak(); stdscr.keypad(0); curses.echo()
 curses.endwin()
