@@ -2,9 +2,9 @@
 
 Servo myservo;
 // Constants
-int LLIM = 190;
-int HLIM = 160;
-int MID = 170;
+int LEFT = 120;
+int RIGHT = 60;
+int MID = 90;
 
 int servoPos = MID;
 int leftSense, midSense, rightSense;
@@ -12,9 +12,9 @@ int cmd = 0;
 
 int servoPin = 3;
 int motorPin = 4;
-int leftSensePin = A0;
-int midSensePin = A1;
-int rightSensePin = A2;
+int leftSensePin = 9;
+int midSensePin = 10;
+int rightSensePin = 8;
 
 
 int motorState = LOW;
@@ -32,7 +32,8 @@ void setup() {
 }
 
 void loop() {
-  readSerial();
+  //readSerial();
+ readSensors();
   doMotors();
 }
 
@@ -41,12 +42,26 @@ void readSensors() {
     midSense = digitalRead(midSensePin);
     rightSense = digitalRead(rightSensePin);
 
+    Serial.print(leftSense);
+    Serial.print("\t");
+    Serial.print(midSense);
+    Serial.print("\t");
+    Serial.println(rightSense);
+    
+    motorState=HIGH;
+
     if (midSense && rightSense && !leftSense) { // Turn right
-        servoPos = HLIM;
-
+        servoPos = LEFT;
     }
-
-
+    else if (midSense && leftSense && !rightSense) { // Turn left
+        servoPos = RIGHT;
+    }
+    else if (midSense) {
+        servoPos=MID;
+    }
+    else {
+        //Keep last state
+    }
 }
 
 void readSerial() {
@@ -55,10 +70,10 @@ void readSerial() {
     Serial.println(cmd);
     switch(cmd){
       case 49://LEFT
-        servoPos = LLIM;
+        servoPos = LEFT;
         break;
       case 50://RIGHT
-        servoPos = HLIM;
+        servoPos = RIGHT;
         break;
       case 51: //STRAIGHT
         servoPos = MID;
